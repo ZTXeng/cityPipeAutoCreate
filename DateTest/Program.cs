@@ -1,4 +1,6 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using PipeAutoCreate.DataModel;
@@ -6,6 +8,7 @@ using PipeAutoCreate.ExcelControl;
 using PipeAutoCreate.Extension;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,16 +19,21 @@ namespace DateTest
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private readonly IMediator _mediator;
+
+        private static  IServiceProvider _serviceProvider;
+
+        public Program(IMediator mediator)
         {
-            var path = @"F:\西环管网数据-整理.xls";
+            _mediator = mediator;
+        }
 
-            //var professionPipes = ReadPipe(path);
-
-            //WritePipes(professionPipes);
-
-            //var attachments = ExcelToData.ReadBuildingAttachment(path);
-            //ExcelToData.WriteAttchments(attachments);
+        static async Task Main(string[] args)
+        {
+            IServiceCollection cc = new ServiceCollection();
+            _serviceProvider = new MyServiceProvider(cc);
+            var mdierR = new Mediator(_serviceProvider);
+            await mdierR.Send(new MyRequest());
         }
     }
 }

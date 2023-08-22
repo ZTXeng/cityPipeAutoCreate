@@ -48,6 +48,18 @@
     <Reference Include="MathNet.Numerics, Version=4.15.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>..\PipeAutoCreate\packages\MathNet.Numerics.Signed.4.15.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="MediatR, Version=12.0.0.0, Culture=neutral, PublicKeyToken=bb9a41a5e8aaa7e2, processorArchitecture=MSIL">
+      <HintPath>..\PipeAutoCreate\packages\MediatR.12.1.1\lib\netstandard2.0\MediatR.dll</HintPath>
+    </Reference>
+    <Reference Include="MediatR.Contracts, Version=2.0.1.0, Culture=neutral, PublicKeyToken=bb9a41a5e8aaa7e2, processorArchitecture=MSIL">
+      <HintPath>..\PipeAutoCreate\packages\MediatR.Contracts.2.0.1\lib\netstandard2.0\MediatR.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\PipeAutoCreate\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\PipeAutoCreate\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=2.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\PipeAutoCreate\packages\Microsoft.IO.RecyclableMemoryStream.2.3.2\lib\net462\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
     </Reference>
@@ -123,6 +135,9 @@
       <HintPath>..\PipeAutoCreate\packages\System.Text.Encoding.CodePages.6.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\PipeAutoCreate\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -134,6 +149,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyCommand.cs" />
+    <Compile Include="MyRequest.cs" />
+    <Compile Include="MyServiceProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

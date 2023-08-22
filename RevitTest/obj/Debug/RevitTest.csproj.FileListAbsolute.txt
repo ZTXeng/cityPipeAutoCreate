@@ -1,0 +1,9 @@
+F:\mygithubcode\PipeAutoCreate\cityPipeAutoCreate\RevitTest\bin\Debug\RevitTest.dll
+F:\mygithubcode\PipeAutoCreate\cityPipeAutoCreate\RevitTest\bin\Debug\RevitTest.pdb
+F:\mygithubcode\PipeAutoCreate\cityPipeAutoCreate\RevitTest\bin\Debug\RevitAPI.dll
+F:\mygithubcode\PipeAutoCreate\cityPipeAutoCreate\RevitTest\bin\Debug\RevitAPIUI.dll
+F:\mygithubcode\PipeAutoCreate\cityPipeAutoCreate\RevitTest\obj\Debug\RevitTest.csproj.AssemblyReference.cache
+F:\mygithubcode\PipeAutoCreate\cityPipeAutoCreate\RevitTest\obj\Debug\RevitTest.csproj.CoreCompileInputs.cache
+F:\mygithubcode\PipeAutoCreate\cityPipeAutoCreate\RevitTest\obj\Debug\RevitTest.csproj.CopyComplete
+F:\mygithubcode\PipeAutoCreate\cityPipeAutoCreate\RevitTest\obj\Debug\RevitTest.dll
+F:\mygithubcode\PipeAutoCreate\cityPipeAutoCreate\RevitTest\obj\Debug\RevitTest.pdb

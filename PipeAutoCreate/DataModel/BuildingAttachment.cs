@@ -12,6 +12,8 @@ namespace PipeAutoCreate.DataModel
 
         public DPoint Point { get; set; }
 
+        public string Profession { set; get; }
+
         public string TypeName { get; set; }
 
         //特征
@@ -26,9 +28,11 @@ namespace PipeAutoCreate.DataModel
         //埋深
         public double BuridHegiht { get; set; }
 
+        public List<ExtensionParameter> ExtensionParameters { get; set; }
+
         public BuildingAttachment()
         {
-                
+            ExtensionParameters = new List<ExtensionParameter>();
         }
     }
 }

@@ -48,8 +48,12 @@ namespace PipeAutoCreate.DataModel
         //备注
         public string Notes { get; set; }
 
+        public List<ExtensionParameter> ExtensionParameters { get; set; }
 
-        public Piping() { }
+
+        public Piping() {
+            ExtensionParameters = new List<ExtensionParameter>();
+        }
 
         public bool EquelPipe(Piping piping)
         {

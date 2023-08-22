@@ -1,6 +1,9 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Plumbing;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Org.BouncyCastle.Math;
 using PipeAutoCreate.DataModel;
 using PipeAutoCreate.Extension;
 using System;
@@ -16,186 +19,148 @@ namespace PipeAutoCreate.ExcelControl
 {
     public static class ExcelToData
     {
-        public static List<ProfessionAttachment> ReadBuildingAttachment(string path)
+        public static List<Piping> ReadPipes(DataTable dataTable, List<string> popertyName)
         {
-            var professionAttachments = new List<ProfessionAttachment>();
+            var pipes = new List<Piping>();
 
-            var wk = GetWorkBook(path);
+            var rosCount = dataTable.Rows.Count;
 
-            var sheetCount = wk.NumberOfSheets;
+            var titleStrings = GetFirstRow(dataTable);
 
-            for (int i = 0; i < sheetCount; i++)
+            var startIdIndex = popertyName.FindIndex(x => x == "起点编号");
+            var endIdIndex = popertyName.FindIndex(x => x == "终点编号");
+            var Xindex = popertyName.FindIndex(x => x == "X");
+            var Yindex = popertyName.FindIndex(x => x == "Y");
+            var Zindex = popertyName.FindIndex(x => x == "管线高程");
+            var speindex = popertyName.FindIndex(x => x == "规格");
+
+            var startIds = GetStartIdIndexs(dataTable, startIdIndex);
+
+            for (int i = 0; i < rosCount; i++)
             {
-                var attachments = new List<BuildingAttachment>();
-                var sheet = wk.GetSheetAt(i);
+                var pipe = new Piping();
 
-                var rowCount = sheet.LastRowNum;
+                var row = dataTable.Rows[i];
 
-                var ids = FindIdsInSheet(sheet);
+                var startId = row[startIdIndex] as string;
+                var endId = row[endIdIndex] as string;
+                var startX = double.Parse((row[Xindex] as string));
+                var startY = double.Parse((row[Yindex] as string));
+                var startZ = double.Parse((row[Zindex] as string));
 
-                for (int j = 1; j < rowCount; j++)
+                var endRowInstance = startIds.FirstOrDefault(x => x.Item1 == endId);
+                if (endRowInstance.Equals(default((string,int)))) continue;
+
+                var endIdRow = dataTable.Rows[startIds.First(x => x.Item1 == endId).Item2];
+
+                var endX = double.Parse((endIdRow[Xindex] as string));
+                var endY = double.Parse((endIdRow[Yindex] as string));
+                var endZ = double.Parse((endIdRow[Zindex] as string));
+
+                var startPoint = new DPoint() { Id = startId, X = startX, Y = startY, Z = startZ };
+                var endPoint = new DPoint() { Id = endId, X = endX, Y = endY, Z = endZ };
+
+                pipe.StartPoint = startPoint;
+                pipe.EndPoint = endPoint;
+
+                pipe.Specification = row[speindex].ToString();
+
+                var columnCount = dataTable.Columns.Count;
+                var subtractNumbers = SubtractNumbers(columnCount - 1, startIdIndex, endIdIndex, Xindex, Yindex, Zindex, speindex);
+                foreach (var column in subtractNumbers)
                 {
-                    var buildingAttchment = new BuildingAttachment();
-
-                    var rowDate = sheet.GetRow(j);
-
-                    var id = rowDate.GetCell(0).StringCellValue;
-
-                    var point = new DPoint()
-                    {
-                        Id = id,
-                        X = ExcelExtension.GetCellNumerica(rowDate.GetCell(4)),
-                        Y = ExcelExtension.GetCellNumerica(rowDate.GetCell(5)),
-                        Z = ExcelExtension.GetCellNumerica(rowDate.GetCell(7))
-                    };
-
-                    buildingAttchment.Point = point;
-                    buildingAttchment.Characteristic = ExcelExtension.GetCellString(rowDate.GetCell(2));
-                    buildingAttchment.GroundHegiht = ExcelExtension.GetCellNumerica(rowDate.GetCell(6));
-                    buildingAttchment.BuridHegiht = ExcelExtension.GetCellNumerica(rowDate.GetCell(8));
-
-                    if (buildingAttchment.Characteristic == "上杆")
-                    {
-                        var reAttchemens = attachments.Where(x => x.Point.Id == id && x.TypeName == buildingAttchment.Characteristic);
-                        if (reAttchemens.Count() == 0)
-                        {
-                            buildingAttchment.TypeName = buildingAttchment.Characteristic;
-                            attachments.Add(buildingAttchment);
-                        }
-                    }
-
-                    var tpyeName = ExcelExtension.GetCellString(rowDate.GetCell(3));
-
-                    if (rowDate.GetCell(3).CellType != CellType.Blank)
-                    {
-                        var reAttchemens = attachments.Where(x => x.Point.Id == id && x.TypeName == tpyeName);
-                        if (reAttchemens.Count() == 0)
-                        {
-                            buildingAttchment.TypeName = tpyeName;
-                            attachments.Add(buildingAttchment);
-                        }
-                    }
+                    pipe.ExtensionParameters.Add(new ExtensionParameter() { Name = titleStrings[column], Value = row[column].ToString() });
                 }
 
-                professionAttachments.Add(new ProfessionAttachment()
+                pipe.Profession = dataTable.TableName;
+
+                var repies = pipes.Where(x => (x.EquelPipe(pipe))).ToList();
+                if (repies.Count() == 0 && pipe.EndPoint != null)
                 {
-                    Profession = sheet.SheetName,
-                    BuildingAttachments = attachments,
-                });
+                    pipes.Add(pipe);
+                }
             }
 
-            return professionAttachments;
+            return pipes;
         }
 
-        public static List<ProfessionPipe> ReadPipe(string path)
+        public static List<BuildingAttachment> ReadAttachments(DataTable dataTable, List<string> propertyName)
         {
-            var professionPipes = new List<ProfessionPipe>();
+            var attachments = new List<BuildingAttachment>();
 
-            var wk = GetWorkBook(path);
+            var rosCount = dataTable.Rows.Count;
 
-            var sheetCount = wk.NumberOfSheets;
+            var titleStrings = GetFirstRow(dataTable);
 
-            for (int i = 0; i < sheetCount; i++)
+            var startIdIndex = propertyName.FindIndex(x => x == "起点编号");
+            var Xindex = propertyName.FindIndex(x => x == "X");
+            var Yindex = propertyName.FindIndex(x => x == "Y");
+            var Zindex = propertyName.FindIndex(x => x == "地面高程");
+            var speindex = propertyName.FindIndex(x => x == "规格");
+            var typenameindex = propertyName.FindIndex(x => x == "附属物");
+
+            for (int i = 0; i < rosCount; i++)
             {
-                var pipes = new List<Piping>();
-                var sheet = wk.GetSheetAt(i);
+                var attachment = new BuildingAttachment();
+                var row = dataTable.Rows[i];
+                var startId = row[startIdIndex] as string;
+                var startX = double.Parse((row[Xindex] as string));
+                var startY = double.Parse((row[Yindex] as string));
+                var startZ = double.Parse((row[Zindex] as string));
+                var startPoint = new DPoint() { Id = startId, X = startX, Y = startY, Z = startZ };
 
-                var rowCount = sheet.LastRowNum;
+                attachment.Point = startPoint;
+                attachment.TypeName = row[typenameindex].ToString();
+                attachment.Specification = row[speindex].ToString();
 
-                var ids = FindIdsInSheet(sheet);
-
-                for (int j = 1; j < rowCount; j++)
+                var columnCount = dataTable.Columns.Count;
+                var subtractNumbers = SubtractNumbers(columnCount - 1, startIdIndex, Xindex, Yindex, Zindex, speindex);
+                foreach (var column in subtractNumbers)
                 {
-                    var pipe = new Piping();
-
-                    var rowDate = sheet.GetRow(j);
-                    var va = rowDate.GetCell(0).StringCellValue;
-
-                    var starstId = rowDate.GetCell(0);
-
-                    var startId = rowDate.GetCell(0).StringCellValue;
-                    var endId = rowDate.GetCell(1).StringCellValue;
-                    var startPoint = new DPoint()
-                    {
-                        Id = startId,
-                        X = ExcelExtension.GetCellNumerica(rowDate.GetCell(4)),
-                        Y = ExcelExtension.GetCellNumerica(rowDate.GetCell(5)),
-                        Z = ExcelExtension.GetCellNumerica(rowDate.GetCell(7))
-                    };
-
-                    var endIdIndexs = ids.Where(x => x.Item1 == endId);
-
-                    if (endIdIndexs.Count() != 0)
-                    {
-                        var endIdIndex = endIdIndexs.First().Item2;
-                        var endPoint = new DPoint()
-                        {
-                            Id = endId,
-                            X = ExcelExtension.GetCellNumerica(sheet.GetRow(endIdIndex).GetCell(4)),
-                            Y = ExcelExtension.GetCellNumerica(sheet.GetRow(endIdIndex).GetCell(5)),
-                            Z = ExcelExtension.GetCellNumerica(sheet.GetRow(endIdIndex).GetCell(7)),
-                        };
-
-                        pipe.EndPoint = endPoint;
-                    }
-
-                    pipe.StartPoint = startPoint;
-
-                    pipe.Characteristic = ExcelExtension.GetCellString(rowDate.GetCell(2));
-                    pipe.Specification = ExcelExtension.GetCellString(rowDate.GetCell(9));
-                    pipe.CaseSize = ExcelExtension.GetCellString(rowDate.GetCell(10));
-                    pipe.Material = ExcelExtension.GetCellString(rowDate.GetCell(11));
-                    pipe.Pressure = ExcelExtension.GetCellString(rowDate.GetCell(12));
-                    pipe.PipeNumber = ExcelExtension.GetCellString(rowDate.GetCell(13));
-                    pipe.HoleNumber = ExcelExtension.GetCellString(rowDate.GetCell(14));
-                    pipe.BuridType = ExcelExtension.GetCellString(rowDate.GetCell(15));
-                    pipe.ConstructionDate = ExcelExtension.GetCellString(rowDate.GetCell(16));
-                    pipe.AffiliatedRoad = ExcelExtension.GetCellString(rowDate.GetCell(17));
-                    pipe.Notes = ExcelExtension.GetCellString(rowDate.GetCell(18));
-                    pipe.Profession = sheet.SheetName;
-
-                    var repies = pipes.Where(x => (x.EquelPipe(pipe))).ToList();
-                    if (repies.Count() == 0 && pipe.EndPoint != null)
-                    {
-                        pipes.Add(pipe);
-                    }
+                    attachment.ExtensionParameters.Add(new ExtensionParameter() { Name = titleStrings[column], Value = row[column].ToString() });
                 }
 
-                professionPipes.Add(new ProfessionPipe()
-                {
-                    PProfession = sheet.SheetName,
-                    Pipings = pipes
-                });
-            }
+                attachment.Profession = dataTable.TableName;
 
-            return professionPipes;
+                attachments.Add(attachment);
+            }
+            attachments  = attachments.DistinctBy(x => x.Point.Id).ToList();
+
+            return attachments;
         }
 
         public static IWorkbook GetWorkBook(string path)
         {
             IWorkbook wk = null;
             var fs = File.OpenRead(path);
-            try
+
+            if (path.Contains("xls"))
             {
                 wk = new HSSFWorkbook(fs);
+                //MessageBox.Show("若程序出错，请将EXCEL保存为2007版本以上");
                 return wk;
             }
-            catch (Exception ex)
+            else if (path.Contains("xlsx"))
             {
-
                 wk = new XSSFWorkbook(fs);
+                //MessageBox.Show("若程序出错，请将EXCEL保存为2007版本以下");
                 return wk;
             }
-
+            else
+            {
+                MessageBox.Show("请选择Excel文件");
+                return null;
+            }
         }
 
-        public static List<(string, int)> FindIdsInSheet(ISheet sheet)
+        public static List<(string, int)> GetStartIdIndexs(DataTable dataTable, int index)
         {
             var ids = new List<(string, int)>();
-            var rowCount = sheet.LastRowNum;
+            var rowCount = dataTable.Rows.Count;
             for (int i = 1; i < rowCount; i++)
             {
-                ids.Add((ExcelExtension.GetCellString(sheet.GetRow(i).GetCell(0)), i));
+                var row = dataTable.Rows[i];
+                ids.Add((row[index].ToString(), i));
             }
 
             return ids;
@@ -203,7 +168,9 @@ namespace PipeAutoCreate.ExcelControl
 
         public static void WritePipes(List<ProfessionPipe> pipings)
         {
-            var path = @"F:\西环管网数据-反写.xls";
+            string basePath = System.Environment.CurrentDirectory;
+            string resultPath = Path.Combine(basePath, "数据-反写.xls");
+            var path = resultPath;
 
             var wk = new HSSFWorkbook();
 
@@ -231,7 +198,10 @@ namespace PipeAutoCreate.ExcelControl
 
         public static void WriteAttchments(List<ProfessionAttachment> professionAttachments)
         {
-            var path = @"F:\西环管网数据-反写2.xls";
+            string basePath = System.Environment.CurrentDirectory;
+            string resultPath = Path.Combine(basePath, "数据-反写2.xls");
+
+            var path = resultPath;
 
             var wk = new HSSFWorkbook();
 
@@ -260,6 +230,23 @@ namespace PipeAutoCreate.ExcelControl
                 wk.Write(file);
             }
         }
+
+        public static List<DataTable> ReadExcelDataTbales(string path, bool isFirstRowHeader = true)
+        {
+            var dataTables = new List<DataTable>();
+            var wk = GetWorkBook(path);
+
+            var sheetCount = wk.NumberOfSheets;
+
+            for (int i = 0; i < sheetCount; i++)
+            {
+                var dataTable = ReadExcel2DataTable(wk, i, isFirstRowHeader);
+                dataTables.Add(dataTable);
+            }
+
+            return dataTables;
+        }
+
         /// <summary>
         /// 从Excel读取数据并存入DataTable表中
         /// </summary>
@@ -267,81 +254,89 @@ namespace PipeAutoCreate.ExcelControl
         /// <param name="sheetIndex">要读取的表index,从0开始</param>
         /// <param name="isFirstRowHeader">excel第一行数据是否作为列标题</param>
         /// <returns></returns>
-        public static DataTable ReadExcel2DataTable(string path, int sheetIndex, bool isFirstRowHeader)
+        public static DataTable ReadExcel2DataTable(IWorkbook wk, int sheetIndex, bool isFirstRowHeader)
         {
-            //
             DataTable dt = new DataTable();
-            FileStream fs = File.OpenRead(@path);  //打开EXCEL文件
+
+            ISheet sheet = wk.GetSheetAt(sheetIndex);  //读取索引的表数据
+
+            dt = new DataTable(sheet.SheetName);   //dt.tableName
+
+            //获取sheet的首行
+            IRow headerRow = sheet.GetRow(0);
+            int columnCount = headerRow.LastCellNum;
+            int rowCount = sheet.LastRowNum;
+            //dt新建列
+            int startRowNum = 0; //当首行是标题时，数据从第1行开始读取。否则，从第0行读取。
+            if (isFirstRowHeader)
             {
-                IWorkbook wk = null;
-                if (path.Contains("xls"))
+                for (int i = 0; i < columnCount; i++)
                 {
-                    wk = new HSSFWorkbook(fs);      //把文件信息写入wk 
-                                                    //MessageBox.Show("若程序出错，请将EXCEL保存为2007版本以上");
+                    dt.Columns.Add(headerRow.GetCell(i).ToString(), typeof(String));
                 }
-                else if (path.Contains("xlsx"))
+                startRowNum = 1;
+            }
+            else
+            {
+                for (int i = 0; i < columnCount; i++)
                 {
-                    wk = new XSSFWorkbook(fs);
-                    //MessageBox.Show("若程序出错，请将EXCEL保存为2007版本以下");
+                    dt.Columns.Add("列" + i, typeof(String));
                 }
-                else
+                startRowNum = 0;
+            }
+
+            //遍历
+
+            for (int i = 0; i < rowCount; i++)  //
+            {
+                //每次开始遍历表时刷新列表
+                DataRow dataRow = dt.NewRow();
+                //dt.Rows.Add();
+                IRow row = sheet.GetRow(i + startRowNum);  //从开始行
+                if (row != null)
                 {
-                    MessageBox.Show("请选择Excel文件");
-                }
-                //---------------------
-                ISheet sheet = wk.GetSheetAt(sheetIndex);  //读取索引的表数据
-
-                dt = new DataTable(sheet.SheetName);   //dt.tableName
-
-
-                //获取sheet的首行
-                IRow headerRow = sheet.GetRow(0);
-                int columnCount = headerRow.LastCellNum;
-                int rowCount = sheet.LastRowNum;
-                //dt新建列
-                int startRowNum = 0; //当首行是标题时，数据从第1行开始读取。否则，从第0行读取。
-                if (isFirstRowHeader)
-                {
-                    for (int i = 0; i < columnCount; i++)
+                    for (int j = 0; j < columnCount; j++)
                     {
-                        dt.Columns.Add(headerRow.GetCell(i).ToString(), typeof(String));
-                    }
-                    startRowNum = 1;
-                }
-                else
-                {
-                    for (int i = 0; i < columnCount; i++)
-                    {
-                        dt.Columns.Add("列" + i, typeof(String));
-                    }
-                    startRowNum = 0;
-                }
-
-                //遍历
-
-                for (int i = 0; i < rowCount; i++)  //
-                {
-                    //每次开始遍历表时刷新列表
-                    DataRow dataRow = dt.NewRow();
-                    //dt.Rows.Add();
-                    IRow row = sheet.GetRow(i + startRowNum);  //从开始行
-                    if (row != null)
-                    {
-                        for (int j = 0; j < columnCount; j++)
+                        ICell cell = row.GetCell(j);
+                        if (cell != null)
                         {
-                            ICell cell = row.GetCell(j);
-                            if (cell != null)
-                            {
-                                //dt.Rows[i][j] = cell.ToString();
-                                dataRow[j] = cell.ToString();
-                            }
+                            //dt.Rows[i][j] = cell.ToString();
+                            dataRow[j] = cell.ToString();
                         }
-
-                        dt.Rows.Add(dataRow);
                     }
+
+                    dt.Rows.Add(dataRow);
                 }
             }
+
             return dt;
+        }
+
+        static List<int> SubtractNumbers(int num, params int[] subtracts)
+        {
+            List<int> result = new List<int>();
+
+            for (int i = 0; i <= num; i++)
+            {
+                if (Array.IndexOf(subtracts, i) == -1)
+                {
+                    result.Add(i);
+                }
+            }
+
+            return result;
+        }
+
+        public static List<string> GetFirstRow(DataTable dataTable)
+        {
+            var result = new List<string>();
+            var columnCount = dataTable.Columns.Count;
+
+            for (int i = 0; i < columnCount; i++)
+            {
+                result.Add(dataTable.Columns[i].ColumnName);
+            }
+            return result;
         }
     }
 }

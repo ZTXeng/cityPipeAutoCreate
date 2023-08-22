@@ -38,11 +38,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Library\AdWindows.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac, Version=7.1.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>packages\Autofac.7.1.0\lib\netstandard2.0\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
       <HintPath>packages\BouncyCastle.Cryptography.2.2.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
-    <Reference Include="CommunityToolkit.Mvvm, Version=8.2.0.0, Culture=neutral, PublicKeyToken=4aff67a105548ee2, processorArchitecture=MSIL">
-      <HintPath>packages\CommunityToolkit.Mvvm.8.2.1\lib\netstandard2.0\CommunityToolkit.Mvvm.dll</HintPath>
+    <Reference Include="CommunityToolkit.Mvvm, Version=8.0.0.0, Culture=neutral, PublicKeyToken=4aff67a105548ee2, processorArchitecture=MSIL">
+      <HintPath>packages\CommunityToolkit.Mvvm.8.0.0\lib\netstandard2.0\CommunityToolkit.Mvvm.dll</HintPath>
     </Reference>
     <Reference Include="Enums.NET, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7ea1c1650d506225, processorArchitecture=MSIL">
       <HintPath>packages\Enums.NET.4.0.1\lib\net45\Enums.NET.dll</HintPath>
@@ -53,8 +56,23 @@
     <Reference Include="MathNet.Numerics, Version=4.15.0.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <HintPath>packages\MathNet.Numerics.Signed.4.15.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="MediatR, Version=12.0.0.0, Culture=neutral, PublicKeyToken=bb9a41a5e8aaa7e2, processorArchitecture=MSIL">
+      <HintPath>packages\MediatR.12.1.1\lib\netstandard2.0\MediatR.dll</HintPath>
+    </Reference>
+    <Reference Include="MediatR.Contracts, Version=2.0.1.0, Culture=neutral, PublicKeyToken=bb9a41a5e8aaa7e2, processorArchitecture=MSIL">
+      <HintPath>packages\MediatR.Contracts.2.0.1\lib\netstandard2.0\MediatR.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="MediatR.Extensions.Autofac.DependencyInjection, Version=11.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MediatR.Extensions.Autofac.DependencyInjection.11.1.0\lib\netstandard2.0\MediatR.Extensions.Autofac.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=2.3.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.IO.RecyclableMemoryStream.2.3.2\lib\net462\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
@@ -101,6 +119,9 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.DiagnosticSource.4.7.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -136,6 +157,9 @@
     </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -146,20 +170,32 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commponent\TextProcessor.cs" />
+    <Compile Include="Environment\RevitInfo.cs" />
+    <Compile Include="Extension\DoucmentExtension.cs" />
+    <Compile Include="Extension\ElementExtension.cs" />
+    <Compile Include="Factory\PipeFactory.cs" />
+    <Compile Include="RevitApplication.cs" />
     <Compile Include="AttributeDepository\DescriptionAttribute.cs" />
-    <Compile Include="CreateGeberator.cs" />
+    <Compile Include="Command\CreatePipeCommand.cs" />
+    <Compile Include="Converter\TestConverter.cs" />
+    <Compile Include="RevitCommand\CreateGeberator.cs" />
     <Compile Include="DataModel\BuildingAttachment.cs" />
     <Compile Include="DataModel\DPoint.cs" />
+    <Compile Include="DataModel\ExtensionParameter.cs" />
     <Compile Include="DataModel\Piping.cs" />
     <Compile Include="DataModel\Profession.cs" />
     <Compile Include="DataModel\ProfessionAttachment.cs" />
     <Compile Include="DataModel\ProfessionPipe.cs" />
+    <Compile Include="ExcelControl\DataToExcel.cs" />
     <Compile Include="ExcelControl\ExcelToData.cs" />
+    <Compile Include="ExcelControl\ExcelToOldData.cs" />
     <Compile Include="Extension\EnumExtensions.cs" />
     <Compile Include="Extension\ExcelExtension.cs" />
     <Compile Include="Extension\ListExtension.cs" />
     <Compile Include="Model\ExcelShowModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\CreatePipeRequest.cs" />
     <Compile Include="ViewModel\ExcelShowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\ExcelShowView.xaml.cs">
@@ -170,10 +206,11 @@
     <Content Include="Library\AdWindows.dll" />
     <Content Include="Library\RevitAPI.dll" />
     <Content Include="Library\RevitAPIUI.dll" />
+    <Content Include="Pic\文件夹.png" />
+    <Resource Include="View\文件夹.png" />
+    <Resource Include="Pic\市政.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Factory\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
@@ -185,11 +222,15 @@
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="packages\CommunityToolkit.Mvvm.8.2.1\build\netstandard2.0\CommunityToolkit.Mvvm.targets" Condition="Exists('packages\CommunityToolkit.Mvvm.8.2.1\build\netstandard2.0\CommunityToolkit.Mvvm.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="packages\CommunityToolkit.Mvvm.8.0.0\build\netstandard2.0\CommunityToolkit.Mvvm.targets" Condition="Exists('packages\CommunityToolkit.Mvvm.8.0.0\build\netstandard2.0\CommunityToolkit.Mvvm.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\CommunityToolkit.Mvvm.8.2.1\build\netstandard2.0\CommunityToolkit.Mvvm.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CommunityToolkit.Mvvm.8.2.1\build\netstandard2.0\CommunityToolkit.Mvvm.targets'))" />
+    <Error Condition="!Exists('packages\CommunityToolkit.Mvvm.8.0.0\build\netstandard2.0\CommunityToolkit.Mvvm.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CommunityToolkit.Mvvm.8.0.0\build\netstandard2.0\CommunityToolkit.Mvvm.targets'))" />
   </Target>
 </Project>

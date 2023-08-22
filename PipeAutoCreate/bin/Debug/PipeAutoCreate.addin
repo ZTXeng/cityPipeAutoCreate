@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>RevitApplication</Name>
+    <Assembly>PipeAutoCreate.dll</Assembly>
+    <ClientId>1c089e60-2aff-4a43-afbd-2966faa90f60</ClientId>
+    <FullClassName>PipeAutoCreate.RevitApplication</FullClassName>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, www.autodesk.com</VendorDescription>
+  </AddIn>
+  <AddIn Type="Command">
+    <Assembly>PipeAutoCreate.dll</Assembly>
+    <ClientId>bd0ac9a5-5316-46af-b6ca-aeba48c15c11</ClientId>
+    <FullClassName>PipeAutoCreate.RevitCommand.CreateGeberator</FullClassName>
+    <Text>CreateGeberator</Text>
+    <Description>""</Description>
+    <VisibilityMode>AlwaysVisible</VisibilityMode>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, www.autodesk.com</VendorDescription>
+  </AddIn>
+</RevitAddIns>

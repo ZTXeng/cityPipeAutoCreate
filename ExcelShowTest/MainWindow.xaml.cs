@@ -1,6 +1,7 @@
 ﻿using PipeAutoCreate.View;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace ExcelShowTest
         public MainWindow()
         {
             InitializeComponent();
+         
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -4,30 +4,105 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PipeAutoCreate.View"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:conv ="clr-namespace:PipeAutoCreate.Converter"
              mc:Ignorable="d" 
-             Height="450" Width="550">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="36"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="36"/>
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" HorizontalAlignment="Right">
-            <Button Height="32" Width="80" Content="刷新" Click="Button_Click"/>
-        </StackPanel>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
-            <StackPanel Orientation="Vertical"  >
-                <StackPanel Margin="6 0 0 0" Orientation="Horizontal" x:Name="ThisGrid">
-                  
-                </StackPanel>
-                <DataGrid ItemsSource="{Binding Model.DataTable}" x:Name="ExcelData" >
-                </DataGrid>
-            </StackPanel>
-        </ScrollViewer>
+             Height="450" Width="1100" Loaded="Window_Loaded">
+    <Window.Resources>
+        <conv:TestConverter x:Key="testConverter"/>
+    </Window.Resources>
 
-        <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" >
-            <Button  Content="确定" Width="80" Height="32" Margin="0 0 4 0" Click="Button_Click_1"/>
-            <Button  Content="取消" Width="80" Height="32" Margin="0 0 4 0"/>
-        </StackPanel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="36"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" HorizontalAlignment="Left" Orientation="Horizontal">
+                <Border BorderBrush="Black" BorderThickness="0.5" Height="32">
+                    <TextBlock Width="420" VerticalAlignment="Center"
+                           Text="{Binding Model.FilePath, Mode=TwoWay, 
+                           UpdateSourceTrigger=PropertyChanged, Converter={StaticResource testConverter}}"/>
+                </Border>
+
+                <Button Height="34" Width="32" Command="{Binding  FileSelect}">
+                    <Button.Background>
+                        <ImageBrush Stretch="Uniform">
+                            <ImageBrush.ImageSource>/PipeAutoCreate;component/View/文件夹.png</ImageBrush.ImageSource>
+                        </ImageBrush>
+                    </Button.Background>
+                </Button>
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" HorizontalAlignment="Right">
+                <Button Height="32" Width="80" Content="添加属性" Click="Button_Click"/>
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1" x:Name="UserDifineSVer"  VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+                <StackPanel Margin="6 0 0 0" Orientation="Horizontal" x:Name="UserDefine"/>
+            </ScrollViewer>
+
+            <DataGrid x:Name="ExcelData" Grid.Row="2"/>
+
+            <StackPanel Grid.Row="3" HorizontalAlignment="Left" Orientation="Horizontal">
+                <ComboBox Height="32" Width="80" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                      ItemsSource="{Binding Model.Professions}" 
+                      SelectedItem="{Binding Model.SelectedProfession}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding ProfessionChanged}" 
+                                               CommandParameter="{Binding ElementName=ExcelData}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+                <TextBlock Width="200" VerticalAlignment="Center"
+                           Text="{Binding Model.OriginalText}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal" >
+                <Button  Content="导出" Width="80" Height="32" Margin="0 0 4 0" Click="Export"/>
+                <Button  Content="检查" Width="80" Height="32" Margin="0 0 4 0" Click="Check"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="36"/>
+            </Grid.RowDefinitions>
+            <DataGrid x:Name="CheckData" Grid.Row="2"/>
+
+            <StackPanel Grid.Row="3" HorizontalAlignment="Left" Orientation="Horizontal">
+                <ComboBox Height="32" Width="80" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                          ItemsSource="{Binding Model.EquipmentNames}" 
+                          SelectedItem="{Binding Model.SelectedEquipmentName}"
+                          SelectedIndex="0">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding EquipmentChanged}" 
+                                                   CommandParameter="{Binding ElementName=CheckData}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+                <TextBlock Width="200" VerticalAlignment="Center"
+                           Text="{Binding Model.AfterText}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal" >
+                <Button  Content="生成" Width="80" Height="32" Margin="0 0 4 0" Command="{Binding Generate}"/>
+                <Button  Content="取消" Width="80" Height="32" Margin="0 0 4 0"/>
+            </StackPanel>
+        </Grid>
+
     </Grid>
+
 </Window>
